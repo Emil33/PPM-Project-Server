@@ -1,0 +1,3 @@
+<user><username>User</username><Class>2A</Class><Name>Jack</Name><password>Password</password></user>
+
+<user><username>User2</username> <Class>A1</Class><Name>Jake</Name><password>password</password></user>

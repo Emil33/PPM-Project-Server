@@ -45,6 +45,10 @@ class ClientServiceThread extends Thread {
    public boolean isDuplicate;
    public static String incomingCredentials;
    public static String incomingRequest;
+   
+   public String username;           
+   public String game;
+   public String score;
 
   ClientServiceThread(Socket s, int i) {
     clientSocket = s;
@@ -52,7 +56,10 @@ class ClientServiceThread extends Thread {
   }
 @Override
   public void run() {
-      
+    File scoreFile = new File("scores.txt");
+    BufferedWriter buffer = null;
+    
+    
     System.out.println("Accepted Client : ID - " + clientID + " : Address - "
         + clientSocket.getInetAddress().getHostName());
     try {
@@ -123,8 +130,39 @@ class ClientServiceThread extends Thread {
             System.out.println(PPMServer.connectedUsernames);
             System.out.println("User logged out");         
                      
-        }    
     } 
+    else if (incomingRequest.equals("!SCORE"))
+              {
+                    outToClient.writeUTF("!active");
+                    String scoreInfo = inFromClient.readUTF();
+                   
+                    String[] splitting = scoreInfo.split("-");
+                    username = splitting[0];
+                    game = splitting[1];
+                    score = splitting[2];                     
+                    System.out.println("Score String Split");
+                    
+                    
+                    
+                    FileWriter writer = new FileWriter("scores.txt", true);
+                    buffer = new BufferedWriter(writer);
+                    PrintWriter printer = new PrintWriter(buffer);                    
+                    System.out.println("Started!");
+                    printer.println(username + "-" + game + "-" + score);
+                    buffer.close();
+                    
+                       
+               
+        
+    
+    
+    
+    
+    
+    
+    
+              }
+            }
     } catch (Exception e) {
       e.printStackTrace();
     }

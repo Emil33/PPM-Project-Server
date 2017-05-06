@@ -132,7 +132,7 @@ class ClientServiceThread extends Thread {
                      
     } 
     else if (incomingRequest.equals("!SCORE"))
-              {
+    {
                     outToClient.writeUTF("!active");
                     String scoreInfo = inFromClient.readUTF();
                    
@@ -151,18 +151,35 @@ class ClientServiceThread extends Thread {
                     printer.println(username + "-" + game + "-" + score);
                     buffer.close();
                     
-                       
-               
+    }
+    else if (incomingRequest.equals("!GETSCORE"))
+    {
+        String scoreReturn = "";
+        incomingCredentials = inFromClient.readUTF();
+        System.out.println(incomingCredentials);        
         
-    
-    
-    
-    
-    
-    
-    
-              }
+        
+            File file = new File("scores.txt");             
+            Scanner fileReader = new Scanner(file);
+            
+            System.out.println("SERVER:Recieved scores request...authenticating");
+            String scoreCheckUsername = incomingCredentials;            
+            while (fileReader.hasNextLine())
+            {
+                String line = fileReader.nextLine();
+                if (line.contains(scoreCheckUsername))
+                {
+                    System.err.println("User Score found!");
+                                      
+                    scoreReturn += (line + ":");                  
+                }
             }
+            System.out.println(scoreReturn);
+            outToClient.writeUTF(scoreReturn);
+            
+     
+    }
+}
     } catch (Exception e) {
       e.printStackTrace();
     }

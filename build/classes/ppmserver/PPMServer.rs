@@ -1,2 +1,0 @@
-ppmserver.ClientServiceThread
-ppmserver.PPMServer

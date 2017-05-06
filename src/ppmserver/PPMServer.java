@@ -49,6 +49,7 @@ class ClientServiceThread extends Thread {
    public String username;           
    public String game;
    public String score;
+   public String admin;
 
   ClientServiceThread(Socket s, int i) {
     clientSocket = s;
@@ -67,7 +68,7 @@ class ClientServiceThread extends Thread {
       DataOutputStream outToClient = new DataOutputStream(clientSocket.getOutputStream());        
     while (running) {
           
-         
+    String adminCheck;
     incomingRequest = inFromClient.readUTF();
     System.out.println(incomingRequest);
     outToClient.writeUTF("RequestRecieved");   
@@ -91,7 +92,18 @@ class ClientServiceThread extends Thread {
                 if (line.contains("<username>" + username + "</username>") && line.contains("<password>" + password + "</password>"))
                 {
                     System.err.println("User found!");
-                    outToClient.writeUTF("true");                    
+                    outToClient.writeUTF("true");
+                    
+                    adminCheck = inFromClient.readUTF();
+                    if(line.contains("<admin>Admin</admin>"))
+                    {
+                        outToClient.writeUTF("Admin");
+                    }
+                    else
+                    {
+                        outToClient.writeUTF("NotAdmin");
+                    }
+                    
                     PPMServer.connectedUsernames += (username + ":");
                     System.out.println(PPMServer.connectedUsernames);
                     usersConnected++;
@@ -163,16 +175,24 @@ class ClientServiceThread extends Thread {
             Scanner fileReader = new Scanner(file);
             
             System.out.println("SERVER:Recieved scores request...authenticating");
-            String scoreCheckUsername = incomingCredentials;            
+            String scoreCheckUsername = incomingCredentials;
+            int i = 0;
+            String[] splitting = scoreCheckUsername.split("-");
+                    username = splitting[0];
+                    admin = splitting[1];
             while (fileReader.hasNextLine())
             {
                 String line = fileReader.nextLine();
-                if (line.contains(scoreCheckUsername))
-                {
+                if(admin.equals("Admin")) {
+                    System.err.println("Non Admin Score found!");
+                    scoreReturn += (line + ":");
+                }
+                else if (line.contains(username))
+                    {
                     System.err.println("User Score found!");
                                       
                     scoreReturn += (line + ":");                  
-                }
+                    }
             }
             System.out.println(scoreReturn);
             outToClient.writeUTF(scoreReturn);

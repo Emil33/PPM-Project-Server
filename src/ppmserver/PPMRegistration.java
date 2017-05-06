@@ -46,6 +46,7 @@ class registrationServerThread extends Thread {
  String Class;
  String Name;
  String password;
+ String admin;
  boolean succeeded = true;
  
 
@@ -76,6 +77,7 @@ registrationServerThread(Socket s, int i) {
                      Class = splitting[1];
                      Name = splitting[2];                     
                      password = splitting[3];
+                     admin = splitting[4];
                     while (fileReader.hasNextLine())
                         {
                     String line = fileReader.nextLine();
@@ -94,7 +96,7 @@ registrationServerThread(Socket s, int i) {
                         PrintWriter printer = new PrintWriter(buffer);
                         outToClient.writeUTF("!SUCCESS");
                         System.err.println("Started!");
-                        printer.println("<user>" + "<username>" + username + "</username> " + "<Class>" + Class + "</Class>" + "<Name>" + Name + "</Name>" + "<password>" + password + "</password>" + "</user>");
+                        printer.println("<user>" + "<username>" + username + "</username> " + "<Class>" + Class + "</Class>" + "<Name>" + Name + "</Name>" + "<password>" + password + "</password>" + "<admin>" + admin + "</admin>" + "</user>");
                         buffer.close();
                     }    
                }
